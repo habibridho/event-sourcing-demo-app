@@ -38,6 +38,7 @@ export default class PayScreen extends Component {
       to: this.state.selectedRecipient.value,
       amount: parseInt(this.state.amount),
     };
+    const startTime = new Date();
     try {
       let res = await axios.post(url, data, {
         headers: {
@@ -45,6 +46,7 @@ export default class PayScreen extends Component {
             'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhhYmliQGVtYWlsLmNvbSIsImlkIjoiMSJ9.Mz9DDIFw8wz9cVe_7IeB26nDBldTciF76KtUhCDTTps',
         },
       });
+      const endTime = new Date();
 
       if (res.data.success) {
         this.setState(INITIAL_STATE);
@@ -54,6 +56,10 @@ export default class PayScreen extends Component {
         }
         this.props.toast.show(message, {
           type: 'success',
+          placement: 'top',
+          duration: 5000,
+        });
+        this.props.toast.show(`Response time: ${endTime - startTime}ms`, {
           placement: 'top',
           duration: 5000,
         });
