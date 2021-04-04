@@ -17,6 +17,21 @@ export default class PayScreen extends Component {
     this.state = INITIAL_STATE;
   }
 
+  componentDidMount() {
+    this.fetchBalance();
+  }
+
+  fetchBalance = () => {
+    axios.get('http://localhost:1212/balance', {
+      headers: {
+        Authorization:
+          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhhYmliQGVtYWlsLmNvbSIsImlkIjoiMSJ9.Mz9DDIFw8wz9cVe_7IeB26nDBldTciF76KtUhCDTTps',
+      },
+    }).then(res => {
+      this.setState({balance: res.data.data.balance});
+    });
+  }
+
   handlePay = async () => {
     this.setState({loading: true});
     let endpoint = '';
@@ -54,6 +69,7 @@ export default class PayScreen extends Component {
         if (kind == 'sync') {
           message = 'Money sent succesfully!';
         }
+        this.fetchBalance();
         this.props.toast.show(message, {
           type: 'success',
           placement: 'top',
@@ -86,7 +102,7 @@ export default class PayScreen extends Component {
             marginTop: 32,
           }}>
           <Text>Hi, Habib</Text>
-          <Text>Rp 15.000</Text>
+          <Text>{this.state.balance ? new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR'}).format(this.state.balance) : 'loading...'}</Text>
         </View>
         <Section title={'Recipient'}>
           <Picker
